@@ -2,6 +2,8 @@
 
 Does semantic code navigation help Codex work through a large Python repository? Run the same three tasks with and without [Serena](https://github.com/oraios/serena) on a pinned checkout of [Hugging Face Datasets](https://github.com/huggingface/datasets), then compare correctness, token usage, tool calls, and elapsed time.
 
+![Serena × Codex on a real Python codebase. Trace, find references, and fix a regression.](assets/social-preview.jpg)
+
 ## Quick start
 
 Use Ubuntu or another Linux environment with Git, `rg`, `uv`, and a signed-in [Codex CLI](https://developers.openai.com/codex/cli). Setup fetches the public source and installs Datasets, Serena, and Pyright with a bundled Node.js runtime into local Python 3.12 environments. The tasks use local fixtures and need no GPU or Hugging Face credentials.

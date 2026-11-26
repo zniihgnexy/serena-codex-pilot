@@ -49,6 +49,16 @@ def indexing_check(checkout):
     )
 
 
+def serena_environment(home):
+    home.mkdir()
+    pyright = json.dumps(str(SERENA.with_name("pyright-langserver")))
+    (home / "serena_config.yml").write_text(
+        f"projects: []\nls_specific_settings:\n  python:\n    ls_path: {pyright}\n",
+        encoding="utf-8",
+    )
+    return {"SERENA_HOME": str(home)}
+
+
 def prepare(checkout, *, regression):
     subprocess.run(
         ["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--no-hardlinks", UPSTREAM, checkout],
@@ -129,11 +139,11 @@ def run_case(args, task, condition, repeat, run_root, version):
 
     mcp = "{}"
     if condition == "serena":
-        serena_home = json.dumps(str(case / "serena-home"))
+        env = serena_environment(case / "serena-home")
+        serena_home = json.dumps(env["SERENA_HOME"])
         mcp = (
             f"{{serena={{command={json.dumps(str(SERENA))}, args={json.dumps(SERENA_ARGS)}, "
-            f"env={{SERENA_HOME={serena_home}, UV_OFFLINE=\"1\"}}, "
-            'env_vars=["UV_CACHE_DIR", "XDG_CACHE_HOME"], startup_timeout_sec=90}}'
+            f"env={{SERENA_HOME={serena_home}}}, startup_timeout_sec=90}}}}"
         )
 
     command = [
@@ -184,8 +194,10 @@ def run_case(args, task, condition, repeat, run_root, version):
 def run(args):
     tasks = [task for task in TASKS if args.task == "all" or task.stem == args.task]
     conditions = ("baseline", "serena") if args.condition == "both" else (args.condition,)
-    if "serena" in conditions and not SERENA.is_file():
-        raise RuntimeError("Serena is missing. Run scripts/setup.sh.")
+    if "serena" in conditions and not all(
+        binary.is_file() for binary in (SERENA, SERENA.with_name("pyright-langserver"))
+    ):
+        raise RuntimeError("Serena or Pyright is missing. Run scripts/setup.sh.")
     version = subprocess.check_output(["codex", "--version"], text=True).strip()
     runs = WORK / "runs"
     runs.mkdir(exist_ok=True)

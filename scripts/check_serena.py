@@ -6,7 +6,7 @@ import tempfile
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from pilot import SERENA, SERENA_ARGS, WORK, prepare
+from pilot import SERENA, SERENA_ARGS, WORK, prepare, serena_environment
 
 
 async def main():
@@ -15,7 +15,7 @@ async def main():
         prepare(checkout, regression=False)
         server = StdioServerParameters(
             command=str(SERENA), args=SERENA_ARGS, cwd=str(checkout),
-            env={"SERENA_HOME": str(Path(folder) / "serena-home"), "UV_OFFLINE": "1"},
+            env=serena_environment(Path(folder) / "serena-home"),
         )
         with (WORK / "serena-check.log").open("w", encoding="utf-8") as log:
             async with stdio_client(server, errlog=log) as (reader, writer):

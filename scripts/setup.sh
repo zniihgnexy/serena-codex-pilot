@@ -3,7 +3,7 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-for command in git uv uvx rg node; do
+for command in git uv rg; do
   if ! command -v "$command" >/dev/null; then
     printf 'Install %s and add it to PATH.\n' "$command" >&2
     exit 1
@@ -33,7 +33,7 @@ uv pip install --python .work/venv/bin/python -e "$target"
 if [[ ! -x .work/serena-venv/bin/python ]]; then
   uv venv --python 3.12 .work/serena-venv
 fi
-uv pip install --python .work/serena-venv/bin/python 'serena-agent==2.1.0'
-uvx -p 3.13 --from 'pyright==1.1.403' pyright --version
+uv pip install --python .work/serena-venv/bin/python 'serena-agent==2.1.0' 'pyright[nodejs]==1.1.403'
+.work/serena-venv/bin/pyright --version
 
 printf '\nRun the fixture checks with:\n  .work/venv/bin/python scripts/pilot.py smoke\n'

@@ -4,7 +4,7 @@ Does semantic code navigation help Codex work through a large Python repository?
 
 ## Quick start
 
-Use Ubuntu or another Linux environment with Git, `rg`, Node.js, `uv`/`uvx`, and a signed-in [Codex CLI](https://developers.openai.com/codex/cli). Setup fetches the public source and packages, prepares Python 3.12 for the fixture and Serena, and caches Pyright for Python 3.13. The tasks use local fixtures and need no GPU or Hugging Face credentials.
+Use Ubuntu or another Linux environment with Git, `rg`, `uv`, and a signed-in [Codex CLI](https://developers.openai.com/codex/cli). Setup fetches the public source and installs Datasets, Serena, and Pyright with a bundled Node.js runtime into local Python 3.12 environments. The tasks use local fixtures and need no GPU or Hugging Face credentials.
 
 ```bash
 bash scripts/setup.sh
